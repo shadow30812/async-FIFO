@@ -1,5 +1,24 @@
 // Parameterised multi-stage FF synchronizer for CDC
 
+
+// cdc_sync.sv Microarchitecture (Parameterized STAGES >= 2)
+//
+//   din [WIDTH-1:0]
+//    (Async Input)
+//          |
+//          v
+//      +-------+        +-------+                 +-------+
+//      | D   Q |        | D   Q |                 | D   Q |
+// -----|       |--------|       |--- . . . -------|       |----> dout [WIDTH-1:0]
+//      |   >   |        |   >   |                 |   >   |      (Synchronized Output)
+//      +---+---+        +---+---+                 +---+---+
+//          |                |                         |
+// clk  ----+----------------+--------------- . . . ---+
+// rst_n --+----------------+---------------- . . . --+
+//      (Stage 0)        (Stage 1)                 (Stage STAGES-1)
+//      |<--------- (* ASYNC_REG = "TRUE", dont_touch = "true" *) --------->|
+
+
 `default_nettype none
 
 module cdc_sync #(
@@ -15,11 +34,10 @@ module cdc_sync #(
     output logic [WIDTH-1:0] dout
 );
 
-  // Compile-time check for eliminating single-flop CDC
+  // Pre-runtime check for eliminating single-flop CDC
   initial begin
     if (STAGES < 2) begin
-      $error("[CDC_SYNC_ERR] Synchronizer depth STAGES must be >= 2. Current: %0d", STAGES);
-      $finish;
+      $fatal("[CDC_SYNC_ERR] Synchronizer depth STAGES must be >= 2. Current: %0d", STAGES);
     end
   end
 
