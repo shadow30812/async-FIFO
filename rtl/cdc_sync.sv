@@ -35,11 +35,10 @@ module cdc_sync #(
 );
 
   // Pre-runtime check for eliminating single-flop CDC
-  initial begin
-    if (STAGES < 2) begin
+  initial
+    if (STAGES < 2)
       $fatal("[CDC_SYNC_ERR] Synchronizer depth STAGES must be >= 2. Current: %0d", STAGES);
-    end
-  end
+
 
   (*ASYNC_REG = "TRUE" *)
   // For Vivado, disable timing checks

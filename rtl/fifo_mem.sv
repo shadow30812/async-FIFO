@@ -26,6 +26,7 @@
 //      --------------------->| Port (mem[raddr])  |---------------> rdata [DATA_WIDTH-1:0]
 //                            +--------------------+
 
+
 `default_nettype none
 
 module fifo_mem #(
@@ -48,13 +49,8 @@ module fifo_mem #(
 
   // Pre-runtime checks
   initial begin
-    if (ADDR_WIDTH < 1) begin
-      $fatal("[FIFO_MEM_ERR] ADDR-WIDTH must be >= 1. Current: %0d", ADDR_WIDTH);
-    end
-
-    if (DATA_WIDTH < 1) begin
-      $fatal("[FIFO_MEM_ERR] DATA_WIDTH must be >= 1. Current: %0d", DATA_WIDTH);
-    end
+    if (ADDR_WIDTH < 1) $fatal("[FIFO_MEM_ERR] ADDR-WIDTH must be >= 1. Current: %0d", ADDR_WIDTH);
+    if (DATA_WIDTH < 1) $fatal("[FIFO_MEM_ERR] DATA_WIDTH must be >= 1. Current: %0d", DATA_WIDTH);
   end
 
   // Memory storage array w/o RESET to permit RAM primitive inference
