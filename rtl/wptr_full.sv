@@ -56,7 +56,7 @@ module wptr_full #(
     output logic [ADDR_WIDTH-1:0] wptr_gray,
     input  logic [ADDR_WIDTH-1:0] rptr_gray_sync
 );
-  // Pre-runtime
+  // Pre-runtime checks
   initial
     if (ADDR_WIDTH < 1) $fatal("[WPTR_FULL_ERR] ADDR_WIDTH must be >= 1. Current: %0d", ADDR_WIDTH);
 
@@ -78,13 +78,14 @@ module wptr_full #(
   // Look-ahead full evaluation with generate guard for boundary cases
   generate
     if (ADDR_WIDTH == 1) begin : gen_full_w1
-      // For depth=2 (N=2), both bits are inverted; no lower bits exist
+      // Both bits inverted for depth = 2
       assign wfull_val = (wptr_gray_next == ~rptr_gray_sync[1:0]);
     end else begin : gen_full_wn
-      // Cummings full condition: invert two MSBs, match lower bits
+      // Cummings full condition: invert two MSBs, match lower bits;
       assign wfull_val = (wptr_gray_next == {~rptr_gray_sync[ADDR_WIDTH:ADDR_WIDTH-1],
       rptr_gray_sync[ADDR_WIDTH-2:0]});
-      // Gray code arithmetic ensures this difference in condition compared to standard binary full flag comparison
+      // Gray code arithmetic ensures this difference in condition
+      // compared to standard binary full flag comparison
     end
   endgenerate
 
