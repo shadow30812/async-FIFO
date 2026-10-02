@@ -53,8 +53,8 @@ module wptr_full #(
     output logic [ADDR_WIDTH-1:0] waddr,
 
     // Gray-coded pointers
-    output logic [ADDR_WIDTH-1:0] wptr_gray,
-    input  logic [ADDR_WIDTH-1:0] rptr_gray_sync
+    output logic [ADDR_WIDTH:0] wptr_gray,
+    input  logic [ADDR_WIDTH:0] rptr_gray_sync
 );
   // Pre-runtime checks
   initial

@@ -79,7 +79,7 @@ module rptr_empty #(
   // Why do you need a comment everywhere?
   assign rempty_val = (rptr_gray_next == wptr_gray_sync);
 
-  always_ff @(posedge clk or negedge rrst_n) begin
+  always_ff @(posedge rclk or negedge rrst_n) begin
     if (!rrst_n) begin
       rptr_bin  <= '0;
       rptr_gray <= '0;
