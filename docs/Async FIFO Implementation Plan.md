@@ -59,7 +59,7 @@ Defined here and reused unchanged by Projects 2 and 3; write them into `docs/int
 | Scripts, constraints, docs | Empty placeholders in the tree below |
 | Compile and lint | Clean as of Oct 4, 2026: all five RTL files build under Icarus Verilog 13 (`-g2012 -Wall`) with no errors or warnings, and `verilator --lint-only -Wall` (5.030) reports zero warnings. No simulation, synthesis or timing run exists yet |
 
-Layout follows `docs/directory_tree.md`: implementation is split into `fpga/vivado/`, `asic/yosys/` (Sky130) and `asic/opensta/`. Rename `docs/bug_post-mortem.md` to `docs/bug_postmortem.md`. Gray conversion is currently inline in the pointer modules; move `bin2gray`/`gray2bin` into `rtl/gray_pkg.sv` so the RTL and the exhaustive Gray tests (§4) share them.
+Layout follows `docs/directory_tree.md`: implementation is split into `fpga/vivado/`, `asic/yosys/` (Sky130) and `asic/opensta/`. Gray conversion is currently inline in the pointer modules; move `bin2gray`/`gray2bin` into `rtl/gray_pkg.sv` so the RTL and the exhaustive Gray tests (§4) share them.
 
 Target tree (files on disk plus the ones this plan adds):
 
@@ -105,9 +105,10 @@ async_fifo/
 |   +-- cdc_analysis.md
 |   +-- cdc_checklist.md
 |   +-- bug_postmortem.md
+|   +-- completed_work.md
 |   +-- interface.md
+|   +-- README.md                   Technical documentation and measured data
 +-- .github/workflows/ci.yml
-+-- README.md                   Technical documentation and measured data
 ```
 
 ## 2. Goals
@@ -199,12 +200,12 @@ Both synchronized pointers are up to `SYNC_STAGES` destination edges stale. The 
 | DATA\_WIDTH | ADDR\_WIDTH | Depth | Why |
 | --- | --- | --- | --- |
 | 8 | 2 | 4 | smallest practical |
-| 16 | 3 | 8 |  |
+| 16 | 3 | 8 | |
 | 32 | 4 | 16 | baseline |
 | 33 | 2 | 4 | Project 3 control-channel FIFOs (32 data + TLAST) |
-| 64 | 5 | 32 |  |
+| 64 | 5 | 32 | |
 | 33 | 8 | 256 | Project 3 result FIFO |
-| larger |  |  | if simulation and synthesis time allow |
+| larger | | | if simulation and synthesis time allow |
 
 Quantify configurations tested, smallest and largest width and depth, total combinations, passed and failed. Values come from experiments.
 
@@ -417,3 +418,14 @@ Every number below is produced by a script and lands in one JSON file per run; `
 | --- | --- |
 | Simulator cannot run the class-based SV harness | Prove a tiny class + randomize test on Verilator 5 first (§4) |
 | Broken binary-pointer FIFO passes in zero-delay simulation | Per-bit skew model, stated openly; detection-rate-versus-skew sweep (§5, §9) |
+
+## 13. Progress Tracking and Maintenance Protocol
+
+After every major change (such as adding or modifying an RTL module, implementing an assertion suite or testbench component, executing a regression or synthesis run, or creating documentation):
+1. **Read the Implementation Plan:** Review `docs/Async FIFO Implementation Plan.md` thoroughly to ensure full alignment with architectural specifications, verification requirements, lint rules, downstream constraints, and the execution sequence.
+2. **Update the Completed Work File:** Immediately record and update progress in `docs/completed_work.md`, detailing:
+   - Specific files created, modified, or verified.
+   - Architectural and implementation details completed.
+   - Verification status, test logs, and lint results (`verilator --lint-only -Wall`).
+   - The immediate next task according to §11 of this plan.
+
